@@ -4,6 +4,7 @@
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:jee="http://www.springframework.org/schema/jee" xmlns:mvc="http://www.springframework.org/schema/mvc"
 	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:tx="http://www.springframework.org/schema/tx"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
                            http://www.springframework.org/schema/beans/spring-beans.xsd
                            http://www.springframework.org/schema/context
@@ -13,7 +14,9 @@
                            http://www.springframework.org/schema/util
                            http://www.springframework.org/schema/util/spring-util.xsd
                            http://www.springframework.org/schema/jee
-        				   http://www.springframework.org/schema/jee/spring-jee.xsd">
+        				   http://www.springframework.org/schema/jee/spring-jee.xsd
+        				   http://www.springframework.org/schema/tx
+        				   http://www.springframework.org/schema/tx/spring-tx.xsd">
 
 	<context:property-placeholder location="classpath*:/mqconfig.properties" />
 
@@ -28,11 +31,8 @@
 		<property name="transportType">
 			<util:constant static-field="com.ibm.mq.jms.JMSC.MQJMS_TP_CLIENT_MQ_TCPIP" />
 		</property>
-
-
 	</bean>
 
-	
 
 	<bean id="jmsQueueConnectionFactory"
 		class="org.springframework.jms.connection.UserCredentialsConnectionFactoryAdapter">
@@ -40,10 +40,17 @@
 		<property name="username" value="${userNameMQ}" />
 		<property name="password" value="${passwordMQ}" />
 	</bean>
-	
-	<bean id="jmsDestinationTopic" class="com.ibm.mq.jms.MQTopic">
-		<constructor-arg value="${topic_news}" />
+
+
+	<!-- setup spring jms TX manager -->
+
+	<bean id="jmsTransactionManager"
+		class="org.springframework.jms.connection.JmsTransactionManager">
+		<!-- can also refer to amq.connectionFactory -->
+		<property name="connectionFactory" ref="jmsQueueConnectionFactory" />
 	</bean>
+
+
 
 	<bean id="jmsQueueTemplate1" class="org.springframework.jms.core.JmsTemplate">
 		<property name="connectionFactory" ref="jmsQueueConnectionFactory" />
@@ -55,10 +62,25 @@
 
 	<bean id="springJmsContainer"
 		class="org.springframework.jms.listener.DefaultMessageListenerContainer">
-		<property name="connectionFactory" ref="jmsQueueConnectionFactory1" />
+		<property name="connectionFactory" ref="jmsQueueConnectionFactory" />
 		<property name="messageListener" ref="serviceMessageDrivenBean" />
-		<property name="destination" ref="jmsDestinationTopic" />
+		<property name="destinationName" value="${queue}" />
+
+		<property name="transactionManager" ref="jmsTransactionManager" />
+		<property name="sessionTransacted" value="true" />
+		<property name="receiveTimeout" value="5000" />
+		<property name="maxMessagesPerTask" value="10" />
+		<property name="autoStartup" value="true" />
+		<property name="acceptMessagesWhileStopping" value="false" />
+		<property name="maxConcurrentConsumers" value="10" />
+
 	</bean>
+
+	<!-- Message driven bean -->
+	<bean id="serviceMessageDrivenBean" class="net.msonic.mqmtest.MailMessageService">
+	</bean>
+	
+	<tx:annotation-driven transaction-manager="jmsTransactionManager" />
 
 
 
