@@ -106,6 +106,31 @@ public class Test01 {
 			}
 		});
 		
+
+	}
+	
+	
+	@Test
+	@Ignore
+	public void sendReadMessageCorrelationId() throws JMSException {
+			
+		final String currentCorrId = createCorrelationId("T");
+		
+		jmsTemplate2.send(new MessageCreator() {
+
+			public Message createMessage(Session session) throws JMSException {
+
+				// TODO Auto-generated method stub
+				
+				TextMessage message = session.createTextMessage(String.format("Message03"));
+				Queue queue = session.createQueue(queue_reply);
+				message.setJMSReplyTo(queue);
+				message.setJMSCorrelationID(currentCorrId);
+
+				return message;
+			}
+		});
+		
 		
 		Message m1 = jmsTemplate2.receiveSelected("JMSCorrelationID='" + currentCorrId + "'");
 		String message1 = ((TextMessage) m1).getText();
@@ -115,6 +140,7 @@ public class Test01 {
 		
 		assertTrue("sendMessageCorrelationId", true);
 	}
+
 
 	private static final char[] CORRELATTION_ID_PADDING = { '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0',
 			'0', '0', '0' };

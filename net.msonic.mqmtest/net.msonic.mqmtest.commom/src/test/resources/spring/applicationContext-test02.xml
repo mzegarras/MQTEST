@@ -49,8 +49,6 @@
 
 	<bean id="springJmsContainer"
 		class="org.springframework.jms.listener.DefaultMessageListenerContainer">
-		<!--property name="sessionAcknowledgeModeName" value="AUTO_ACKNOWLEDGE" /-->
-		<!--property name="sessionTransacted" value="false" / -->
 		<property name="connectionFactory" ref="jmsQueueConnectionFactory" />
 		<property name="messageListener" ref="serviceMessageDrivenBean" />
 		<property name="destinationName" value="${queue}" />
