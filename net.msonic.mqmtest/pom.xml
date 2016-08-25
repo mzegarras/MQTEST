@@ -160,6 +160,27 @@
 		</dependency>
 		
 		<dependency>
+			<groupId>com.ibm.mq</groupId>
+			<artifactId>com.ibm.mq.headers</artifactId>
+			<version>${mq.version}</version>
+			<!--scope>provided</scope-->
+		</dependency>
+		
+		<dependency>
+			<groupId>com.ibm.mq</groupId>
+			<artifactId>com.ibm.mq.commonservices</artifactId>
+			<version>${mq.version}</version>
+			<!--scope>provided</scope-->
+		</dependency>
+		
+		<dependency>
+			<groupId>com.ibm.mq</groupId>
+			<artifactId>com.ibm.mq</artifactId>
+			<version>${mq.version}</version>
+			<!--scope>provided</scope-->
+		</dependency>
+		
+		<dependency>
 			<groupId>javax.jms</groupId>
 			<artifactId>jms</artifactId>
 			<version>1.1</version>
