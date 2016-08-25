@@ -142,7 +142,6 @@
 			<groupId>com.ibm.mq</groupId>
 			<artifactId>com.ibm.mqjms</artifactId>
 			<version>${mq.version}</version>
-			
 			<!--scope>provided</scope-->
 		</dependency>
 
@@ -152,7 +151,14 @@
 			<version>${mq.version}</version>
 			<!--scope>provided</scope-->
 		</dependency>
-
+		
+		<dependency>
+			<groupId>com.ibm.mq</groupId>
+			<artifactId>dhbcore</artifactId>
+			<version>${mq.version}</version>
+			<!--scope>provided</scope-->
+		</dependency>
+		
 		<dependency>
 			<groupId>javax.jms</groupId>
 			<artifactId>jms</artifactId>
